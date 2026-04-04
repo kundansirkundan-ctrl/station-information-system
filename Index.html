@@ -1,203 +1,222 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
 <title>Station Information System</title>
 
 <style>
-
-body{
-font-family:Segoe UI;
-margin:0;
-background:#eef2f7;
+/* ===================== */
+/* GLOBAL & BASE */
+/* ===================== */
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  background: #cfd8e3; /* Soft UI Base */
+  color: #1e293b;
 }
 
-/* SEARCH AREA */
-
-.searchArea{
-
-padding:20px;
-
-background:white;
-
-box-shadow:0 2px 10px rgba(0,0,0,.1);
-
-position:relative;
-
+/* ===================== */
+/* SEARCH AREA (Centered & Spaced) */
+/* ===================== */
+.searchArea {
+  padding: 30px 20px 20px 20px; /* Top padding added for gap */
+  display: flex;
+  flex-direction: column; /* Vertical alignment for input + suggestions */
+  align-items: center; /* Horizontally center contents */
+  background: #cfd8e3;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(166, 177, 189, 0.4);
 }
 
-#search{
-
-width:280px;
-
-padding:10px;
-
-font-size:16px;
-
-border:1px solid #ccc;
-
-border-radius:6px;
-
+#search {
+  width: 320px; /* Slightly more compact */
+  padding: 12px 20px;
+  background: #b8c4d1; 
+  border-radius: 30px;
+  border: none;
+  outline: none;
+  /* Inset Shadow for Search Box */
+  box-shadow: inset 5px 5px 10px #a6b1bd, 
+              inset -3px -3px 8px #f8faff;
+  font-weight: 700;
+  color: #1e293b;
+  text-align: center; /* Center the text/placeholder inside */
+  transition: all 0.3s ease;
 }
 
-/* SUGGESTIONS */
-
-#suggestions{
-
-position:absolute;
-
-top:65px;
-
-left:20px;
-
-width:280px;
-
-background:white;
-
-border:1px solid #ddd;
-
-border-radius:6px;
-
-box-shadow:0 5px 15px rgba(0,0,0,.1);
-
-display:none;
-
-max-height:220px;
-
-overflow:auto;
-
+/* 🎨 Placeholder color (Matches Card Heading Blue) */
+#search::placeholder {
+  color: #1e40af; 
+  font-weight: 600;
+  opacity: 0.7;
 }
 
-.suggestion{
-
-padding:8px 10px;
-
-cursor:pointer;
-
+#search:focus {
+  background: #c3cedb;
+  width: 340px; /* Slight expansion on focus */
+  box-shadow: inset 6px 6px 12px #9ba7b5, 
+              0 0 15px rgba(30, 64, 175, 0.15);
 }
 
-.suggestion:hover{
-
-background:#d1fae5;
-
+/* ===================== */
+/* SUGGESTIONS (Compact & Vertical) */
+/* ===================== */
+#suggestions {
+  position: absolute;
+  top: 85px; /* Adjust based on new top padding */
+  width: 280px; /* Width reduced to avoid overlapping cards */
+  background: #cfd8e3;
+  border-radius: 16px;
+  /* Soft UI Pop-out look */
+  box-shadow: 8px 8px 16px #a6b1bd, 
+              -4px -4px 12px #f8faff;
+  display: none; 
+  flex-direction: column;
+  max-height: 180px; /* Reduced height to prevent covering content */
+  overflow-y: auto;
+  padding: 8px;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
 }
 
-/* MAIN AREA */
-
-#stationContent{
-
-padding:25px;
-
+.suggestion {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #1e293b;
+  border-radius: 10px;
+  background: #cfd8e3;
+  /* Inset look for items */
+  box-shadow: inset 2px 2px 4px #a6b1bd, 
+              inset -2px -2px 4px #f8faff;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
-/* GRID */
-
-.grid{
-
-display:flex;
-
-flex-wrap:wrap;
-
-gap:18px;
-
+.suggestion:hover {
+  background: #1e40af;
+  color: #ffffff;
+  transform: translateX(4px);
+  box-shadow: 4px 4px 8px #a6b1bd;
 }
 
-/* GREEN GLASS CARD */
-
-.card{
-
-background:linear-gradient(
-135deg,
-rgba(34,197,94,0.18),
-rgba(16,185,129,0.25)
-);
-
-backdrop-filter:blur(10px);
-
-border:1px solid rgba(34,197,94,0.35);
-
-padding:16px;
-
-border-radius:14px;
-
-box-shadow:
-0 8px 25px rgba(0,0,0,0.15),
-inset 0 0 8px rgba(255,255,255,0.4);
-
-flex:1 1 420px;
-
-min-width:420px;
-
-transition:all .25s ease;
-
+/* Custom Scrollbar for Suggestions */
+#suggestions::-webkit-scrollbar {
+  width: 5px;
+}
+#suggestions::-webkit-scrollbar-thumb {
+  background: #a6b1bd;
+  border-radius: 10px;
 }
 
-.card:hover{
-
-transform:translateY(-3px);
-
-box-shadow:
-0 12px 30px rgba(0,0,0,0.2),
-inset 0 0 10px rgba(255,255,255,0.5);
-
+/* ===================== */
+/* GRID & CARDS (Analysis Style) */
+/* ===================== */
+#stationContent {
+  padding: 30px;
 }
 
-.card h3{
-
-margin-top:0;
-
-color:#065f46;
-
+.station-title {
+  color: #1e40af;
+  font-weight: 800;
+  font-size: 22px;
+  margin-bottom: 25px;
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 2px #a6b1bd;
 }
 
-/* TABLE */
-
-table{
-
-width:100%;
-
-border-collapse:collapse;
-
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); 
+  gap: 25px; 
+  align-items: stretch;
 }
 
-td{
-
-border:1px solid rgba(0,0,0,.1);
-
-padding:6px 10px;
-
-font-size:14px;
-
-white-space:nowrap;
-
+.card {
+  background: #cfd8e3;
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 12px 12px 24px #a6b1bd, 
+              -12px -12px 24px #f8faff;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  transition: all 0.3s ease;
+  min-height: 220px; 
 }
 
-tr:nth-child(even){
-
-background:rgba(255,255,255,.4);
-
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 18px 18px 35px #a6b1bd, 
+              -12px -12px 30px #f8faff;
 }
 
-/* MOBILE */
-
-@media (max-width:700px){
-
-.card{
-min-width:100%;
+.card h3 {
+  margin: 0 0 15px 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: #1e40af;
+  border-bottom: 2px solid rgba(30, 64, 175, 0.1);
+  padding-bottom: 8px;
 }
 
-td{
-white-space:normal;
-word-break:break-word;
+/* ===================== */
+/* TABLE INSIDE CARD */
+/* ===================== */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
 }
 
+td {
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #cfd8e3;
+  color: #1e293b;
+  border: none;
+  box-shadow: inset 3px 3px 6px #a6b1bd, 
+              inset -2px -2px 5px #f8faff;
 }
 
+td:first-child { border-radius: 10px 0 0 10px; }
+td:last-child { border-radius: 0 10px 10px 0; }
+
+tr:hover td {
+  background: #1e40af;
+  color: #fff;
+  box-shadow: 0 4px 8px rgba(30, 64, 175, 0.3);
+}
+
+/* ===================== */
+/* MOBILE OPTIMIZATION */
+/* ===================== */
+@media (max-width: 800px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  #search {
+    width: 90%;
+  }
+  #suggestions {
+    width: 85%;
+  }
+}
 </style>
+
+
+
+
+
 
 </head>
 
@@ -207,18 +226,25 @@ word-break:break-word;
 
 <input id="search" placeholder="Search Station Code">
 
+
 <div id="suggestions"></div>
+
 
 </div>
 
+
 <div id="stationContent"></div>
+
 
 <script>
 
+
 const sheetID="1y1wPLDcbF1uJNx07cZ4NDGfZoe-Jbkvmo4JZ8AYrsZM";
+
 
 let stations=[];
 let currentIndex=-1;
+
 
 const search=document.getElementById("search");
 const box=document.getElementById("suggestions");
@@ -246,12 +272,13 @@ stations.push(r.c[0].v.toUpperCase());
 
 }
 
+
 });
+
 
 }
 
 loadStations();
-
 
 
 /* SEARCH */
@@ -270,6 +297,7 @@ box.style.display="none";
 document.getElementById("stationContent").innerHTML="";
 
 return;
+
 
 }
 
@@ -291,6 +319,7 @@ loadStation(st);
 
 };
 
+
 box.appendChild(div);
 
 }
@@ -299,8 +328,8 @@ box.appendChild(div);
 
 box.style.display="block";
 
-});
 
+});
 
 
 /* KEYBOARD */
@@ -341,6 +370,7 @@ box.style.display="none";
 
 else if(items.length>0){
 
+
 loadStation(items[0].textContent);
 
 box.style.display="none";
@@ -349,34 +379,44 @@ box.style.display="none";
 
 }
 
+
 else if(e.key==="Escape"){
+
 
 box.style.display="none";
 
+
 }
+
 
 });
 
 
 function highlight(items){
 
+
 items.forEach(i=>i.style.background="");
+
 
 if(items[currentIndex]){
 
+
 items[currentIndex].style.background="#bbf7d0";
 
-}
 
 }
 
+
+}
 
 
 /* FETCH RANGE */
 
 async function getRange(sheet,range){
 
+
 let url=`https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?sheet=${sheet}&range=${range}`;
+
 
 let res=await fetch(url);
 
@@ -384,33 +424,48 @@ let text=await res.text();
 
 let json=JSON.parse(text.substring(47).slice(0,-2));
 
+
 let rows=json.table.rows;
+
 
 let data=[];
 
+
 rows.forEach(r=>{
+
 
 let row=[];
 
+
 if(r.c){
+
 
 r.c.forEach(c=>{
 row.push(c && c.v ? c.v : "");
 });
 
+
 }
+
 
 data.push(row);
 
+
 });
+
 
 return data;
 
+
 }
+
+
+
 
 
 
 /* TABLE RENDER */
+
 
 function renderTable(data){
 
@@ -440,6 +495,7 @@ html+="</tr>";
 
 });
 
+
 html+="</table>";
 
 if(hasData) return html;
@@ -448,20 +504,20 @@ return "";
 
 }
 
-
-
 /* LOAD STATION */
 
 async function loadStation(st){
 
-let html=`<h2>${st} Station</h2><div class="grid">`;
+let html = `<h2 class="station-title">${st} Station</h2><div class="grid">`;
 
-let officer=await getRange(st,"B3:F7");
+
+let officer=await getRange(st,"B3:E7");
 let axle=await getRange(st,"B9:C12");
 let ufsbi=await getRange(st,"E9:F11");
 let ips=await getRange(st,"H9:I13");
 let eld=await getRange(st,"B15:C16");
 let fire=await getRange(st,"E15:F16");
+
 
 let sections=[
 
@@ -472,7 +528,9 @@ let sections=[
 ["ELD",eld],
 ["Fire Alarm",fire]
 
+
 ];
+
 
 sections.forEach(sec=>{
 
@@ -486,24 +544,33 @@ html+=`
 
 <h3>${sec[0]}</h3>
 
+
 ${table}
 
 </div>
 
+
 `;
 
+
 }
+
 
 });
 
+
+
 html+="</div>";
-
 document.getElementById("stationContent").innerHTML=html;
-
 }
 
 </script>
-
 </body>
-
 </html>
+
+
+
+
+
+
+
